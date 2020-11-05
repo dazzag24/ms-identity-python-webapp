@@ -62,10 +62,23 @@ def graphcall():
     if not token:
         return redirect(url_for("login"))
     graph_data = requests.get(  # Use token to call downstream service
-        app_config.ENDPOINT,
+        app_config.GRAPH_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token['access_token']},
         ).json()
-    return render_template('display.html', result=graph_data)
+    return render_template('display_graph.html', result=graph_data)
+
+
+@app.route("/billing")
+def billing():
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
+    billing_data = requests.get(  # Use token to call downstream service
+        app_config.BILLING_ENDPOINT,
+        headers={'Authorization': 'Bearer ' + token['access_token']},
+        ).json()
+    return render_template('display_billing.html', result=billing_data)
+
 
 
 def _load_cache():
